@@ -60,6 +60,7 @@ def main():
         for enemy in enemys_list:
             if enemy.state != 'die':
                 my_draw.ellipse(tuple(enemy.position), outline = enemy.outline, fill = (255, 0, 0))
+                
 
         for bullet in bullets:
             if bullet.state != 'hit':

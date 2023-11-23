@@ -6,13 +6,14 @@ class Character:
         self.state = None
         self.position = np.array([width/2 - 20, height/2 - 20, width/2 + 20, height/2 + 20])
         # 총알 발사를 위한 캐릭터 중앙 점 추가
-        self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
+        #self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
+        self.center = np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
         self.outline = "#FFFFFF"
 
     def move(self, command = None):
         if command['move'] == False:
             self.state = None
-            self.outline = "#FFFFFF" #검정색상 코드!
+            self.outline = "#FFFFFF" #흰색상 코드!
         
         else:
             self.state = 'move'
@@ -35,4 +36,5 @@ class Character:
                 self.position[2] += 5
                 
         #center update
-        self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2]) 
+        #self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2]) 
+        self.center = np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
