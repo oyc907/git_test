@@ -13,23 +13,22 @@ joystick = Joystick()
 #filename="Enemy_3.png"
 filename="astronaut_cut(70)_normal_after.png"
 subject_filename="subject_1(25).png"
-
+backg_filename="Earth.png"
 
 def main():
     joystick = Joystick()
-    #my_image = Image.new("RGB", (joystick.width, joystick.height))
-    my_image = Image.new("RGBA", (joystick.width, joystick.height))
+    my_image = Image.new("RGB", (joystick.width, joystick.height))
 
     #back_im=my_image.copy()    #굳이 copy() 없어도 동작함
 
     my_draw = ImageDraw.Draw(my_image)
-    #my_draw = ImageDraw.Draw(back_im)
 
     
     Char_1=Image.open(filename) #움직일 character의 그림
+    back_g=Image.open(backg_filename)   #배경 이미지
 
     Student= Character(joystick.width, joystick.height)
-    
+
     enemy_1 = Enemy((50, 50))
     enemy_2 = Enemy((200, 200))
     enemy_3 = Enemy((150, 50))
@@ -56,18 +55,13 @@ def main():
 
         Student.move(command)
 
-        #back_im.paste(Char_1,tuple((Student.center)))
-        my_image.paste(Char_1,tuple((Student.center)))
+        _, _, _, mask = Char_1.split()
+        my_image.paste(Char_1,tuple((Student.center)),mask)     #투명부분은 안 보이도록 설정
 
-        #joystick.disp.image(back_im)
         joystick.disp.image(my_image)
-        my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (0xff, 0xff, 0xff, 100))   #흰색
+        my_image.paste(back_g,(0,0))
+        #my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (0xff, 0, 0, 100))   #흰색
         #my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (0, 0, 0, 100))   #기본 배경은 검정
-        
-        
-
-
-        
         
 
             # for enemy in enemys_list:
