@@ -11,7 +11,8 @@ from Joystick import Joystick
 
 joystick = Joystick()
 #filename="Enemy_3.png"
-filename="astronaut_cut(70)_normal_after.png"
+#filename="astronaut_cut(70)_normal_after.png"
+filename="astronaut_cut(70)_normal.png"
 subject_filename="subject_1(25).png"
 backg_filename="Earth.png"
 
