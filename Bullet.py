@@ -56,3 +56,4 @@ class Bullet:
         '''
         return ego_position[0] > other_position[0] and ego_position[1] > other_position[1] \
                  and ego_position[2] < other_position[2] and ego_position[3] < other_position[3]
+        #return에서 \은 그저 줄바꿈
