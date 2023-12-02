@@ -6,6 +6,7 @@ class Bullet:
         self.speed = 10
         self.damage = 10
         self.position = np.array([position[0]-3, position[1]-3, position[0]+3, position[1]+3])
+        self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
         self.direction = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
         self.state = None
         self.outline = "#0000FF"
@@ -36,6 +37,10 @@ class Bullet:
         if self.direction['right']:
             self.position[0] += self.speed
             self.position[2] += self.speed
+        
+        
+        #center update
+        self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
             
     def collision_check(self, enemys):
         for enemy in enemys:
@@ -57,3 +62,9 @@ class Bullet:
         return ego_position[0] > other_position[0] and ego_position[1] > other_position[1] \
                  and ego_position[2] < other_position[2] and ego_position[3] < other_position[3]
         #return에서 \은 그저 줄바꿈
+    
+    def hit_wall_check(self,width,height):
+        if self.center[0]>width or self.center[0]<=0:    #x좌표가 화면 밖으로 넘어감
+            self.state='hit'
+        if self.center[1]>height or self.center[1]<=0:    #y좌표가 화면 밖으로 넘어감
+            self.state='hit'
