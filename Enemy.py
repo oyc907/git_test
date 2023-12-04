@@ -19,6 +19,9 @@ class Enemy:
         self.die_flag=die_flag
         self.sign_regen=sign_regen
 
+        self.width_ego=25   #Enemy가 차지하는 width,height (내가 설정하기 나름)
+        self.height_ego=25
+
         
         
     def regen(self,spawn_position,die_flag,sign_regen): # regen이라는 함수를 정의해야만
