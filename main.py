@@ -14,15 +14,27 @@ from Joystick import Joystick
 
 #count=0
 
+filename="Student_20.png"
+subject_filename="Subject_25.png"
+backg_filename="Earth.png"
+
 def main():
     joystick = Joystick()
     my_image = Image.new("RGB", (joystick.width, joystick.height))
     my_draw = ImageDraw.Draw(my_image)
-    my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(255, 0, 0, 100))
-    joystick.disp.image(my_image)
-    # 잔상이 남지 않는 코드 & 대각선 이동 가능
-    my_circle = Character(joystick.width, joystick.height)
-    my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
+    #my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(255, 0, 0, 100))
+    
+
+    # joystick.disp.image(my_image)
+    # # 잔상이 남지 않는 코드 & 대각선 이동 가능
+    # my_circle = Character(joystick.width, joystick.height)
+    # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
+    
+    Char_1=Image.open(filename) #움직일 character의 그림
+    Subject_img=Image.open(subject_filename) #Enemy(과목)의 그림
+    back_g=Image.open(backg_filename)   #배경 이미지
+    Student= Character(joystick.width, joystick.height)
+    
     enemy_1 = Enemy((50, 50),0,0)
     enemy_2 = Enemy((200, 200),0,0)
     enemy_3 = Enemy((150, 50),0,0)
@@ -54,10 +66,12 @@ def main():
             command['move'] = True
 
         if not joystick.button_A.value: # A pressed
-            bullet = Bullet(my_circle.center, command)
+            #bullet = Bullet(my_circle.center, command)
+            bullet = Bullet(Student.center, command)
             bullets.append(bullet)
 
-        my_circle.move(command)
+        #my_circle.move(command)
+        Student.move(command)
         for bullet in bullets:
             bullet.collision_check(enemys_list)
             bullet.hit_wall_check(joystick.width, joystick.height)    #벽에 닿으면 hit 판정
@@ -65,16 +79,31 @@ def main():
 
             
             
-        my_circle.collision_check(enemys_list)
-        #그리는 순서가 중요합니다. 배경을 먼저 깔고 위에 그림을 그리고 싶었는데 그림을 그려놓고 배경으로 덮는 결과로 될 수 있습니다.
-        my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
-        my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
-        #print("position: ",my_circle.position[0],my_circle.position[1],my_circle.position[2],my_circle.position[3])
-        #print("center: ",my_circle.center[0],my_circle.center[1])
+        # my_circle.collision_check(enemys_list)    
+        # #그리는 순서가 중요합니다. 배경을 먼저 깔고 위에 그림을 그리고 싶었는데 그림을 그려놓고 배경으로 덮는 결과로 될 수 있습니다.
+        # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
+        # my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
+        # #print("position: ",my_circle.position[0],my_circle.position[1],my_circle.position[2],my_circle.position[3])
+        # #print("center: ",my_circle.center[0],my_circle.center[1])
+
+
+        Student.collision_check(enemys_list)
+        _, _, _, mask = Char_1.split()
+        my_image.paste(Char_1,tuple((Student.center)),mask)     #투명부분은 안 보이도록 설정
+
+        _, _, _, mask = Subject_img.split()
+        # for enemy in enemys_list:
+        #     my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
         
+        joystick.disp.image(my_image)
+        my_image.paste(back_g,(0,0))
+
         for enemy in enemys_list:
             if enemy.state != 'die':
-                my_draw.ellipse(tuple(enemy.position), outline = enemy.outline, fill = (255, 0, 0))
+                #my_draw.ellipse(tuple(enemy.position), outline = enemy.outline, fill = (255, 0, 0))
+                
+                my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
+            
             elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
@@ -99,7 +128,7 @@ def main():
         #print(bullets)
 
         #좌표는 동그라미의 왼쪽 위, 오른쪽 아래 점 (x1, y1, x2, y2)
-        joystick.disp.image(my_image)
+        #joystick.disp.image(my_image)
         
 
 #def timer():
