@@ -52,7 +52,7 @@ class Character:
             
             if collision:
                 enemy.state = 'die'
-                self.state = 'hit'
+                self.state = 'hit' #hit 대신 life 감소하는 것으로 바꾸기
 
     #def overlap(self, ego_center, other_center,other_die_flag):
     def overlap(self, ego, other):

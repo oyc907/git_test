@@ -15,9 +15,13 @@ from Joystick import Joystick
 
 #count=0
 
-#filename_right_basic="Student_40_right.png"
+filename_right_basic="Student_40_right.png"
 filename_right_1="Student_40_right_1.png"
+filename_right_2="Student_40_right_2.png"
+filename_right_3="Student_40_right_3.png"
 filename_right_4="Student_40_right_4.png"
+
+
 
 
 filename_left_1="Student_40_left_1.png"
@@ -50,9 +54,12 @@ def main():
     # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
     
      
-    Char_r_1=Image.open(filename_right_1) #움직일 character의 그림(오른쪽)
+    Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
+    Char_r_1=Image.open(filename_right_1) 
+    Char_r_2=Image.open(filename_right_2)
+    Char_r_3=Image.open(filename_right_3)
     Char_r_4=Image.open(filename_right_4)
-
+    Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 
 
     Char_l_1=Image.open(filename_left_1) #움직일 character의 그림(왼쪽)
@@ -63,7 +70,7 @@ def main():
     Char_4=Image.open(filename_down) #움직일 character의 그림(아래쪽)
     
     #Char=ImageOps.expand(Char_1, border=1, fill='red')   #image의 경계선(border)를 그림
-    Char=ImageOps.expand(Char_r_1, border=1, fill='red')   #image의 경계선(border)를 그림
+    Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
 
     
 
@@ -94,6 +101,9 @@ def main():
     flag=0    #움직일 때, 걷는 것처럼 구현하기 위한 flag
     global sign_regen   # 전역 변수 sign_regen을 사용
     while True:
+        joystick.disp.image(my_image)
+        my_image.paste(back_g,(0,0))
+
         command = {'move': False, 'up_pressed': False , 'down_pressed': False, 'left_pressed': False, 'right_pressed': False}
         
         if not joystick.button_U.value:  # up pressed
@@ -126,10 +136,9 @@ def main():
             flag=~flag
             if flag:
                 Char=ImageOps.expand(Char_r_1, border=1, fill='red')   #image의 경계선(border)를 그림
-            # for img in Char_r_list:
-            #     Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
             else:    
                 Char=ImageOps.expand(Char_r_4, border=1, fill='red')   #image의 경계선(border)를 그림
+            
             
 
         if not joystick.button_A.value: # A pressed
@@ -137,6 +146,7 @@ def main():
             bullet = Bullet(Student.center, command)
             bullets.append(bullet)
             
+        
 
         my_circle.move(command)
         Student.move(command)
@@ -145,7 +155,7 @@ def main():
             bullet.hit_wall_check(joystick.width, joystick.height)    #벽에 닿으면 hit 판정
             bullet.move()
 
-            
+        
             
         # my_circle.collision_check(enemys_list)    
         # #그리는 순서가 중요합니다. 배경을 먼저 깔고 위에 그림을 그리고 싶었는데 그림을 그려놓고 배경으로 덮는 결과로 될 수 있습니다.
@@ -169,11 +179,10 @@ def main():
         #_, _, _, mask = Subject_img.split()
         _, _, _, mask = Subject_img_border.split()
 
-        # for enemy in enemys_list:
-        #     my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
         
-        joystick.disp.image(my_image)
-        my_image.paste(back_g,(0,0))
+        # jam jam
+        # joystick.disp.image(my_image)
+        # my_image.paste(back_g,(0,0))
 
         for enemy in enemys_list:
             if enemy.state != 'die':
@@ -182,6 +191,7 @@ def main():
                 #my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
                 # my_image.paste(Subject_img_border,tuple((enemy.center)-25),mask)     #투명부분은 안 보이도록 설정
                 my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
+                         
             elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
@@ -192,13 +202,22 @@ def main():
                     _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
                     #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
                     my_image.paste(explode_img,tuple((enemy.center)-enemy.width_ego),mask_1) 
+                    joystick.disp.image(my_image)   #그냥 넣으면 polled I/O 처럼 순간 멈춘다 thread 따로 만들어야 할듯
+                    # my_image.paste(back_g,(0,0))
                 # enemy.regen((-30,-30),0,0) 
                 # 안보이는 곳으로 옮김으로써 터진 위치에서 계속 hit 판정을 안나도록 함
                 # (이래야 총알이 방금 맞혔던 자리 지나가도 보임)
                 
                 
                     
-
+        for img in Char_r_list:
+                Char_1=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
+                _, _, _, mask = Char_1.split()
+                # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
+                my_image.paste(Char_1,(50,150),mask)     #투명부분은 안 보이도록 설정
+                #joystick.disp.image(my_image)
+                #my_image.paste(back_g,(0,0))
+                
                 
         
        
@@ -220,6 +239,13 @@ def main():
 
         #좌표는 동그라미의 왼쪽 위, 오른쪽 아래 점 (x1, y1, x2, y2)
         #joystick.disp.image(my_image)
+        # joystick.disp.image(my_image)
+        # my_image.paste(back_g,(0,0))
+
+        def show_Explode():     #터지는 장면 보이기 위해 thread 함수 정의
+            global my_image
+
+            joystick.disp.image(my_image)
         
 
 #def timer():
