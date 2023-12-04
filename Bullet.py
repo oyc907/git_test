@@ -9,7 +9,7 @@ class Bullet:
         self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
         self.direction = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
         self.state = None
-        self.outline = "#0000FF"
+        self.outline = "#FFFF00"
         if command['up_pressed']:
             self.direction['up'] = True
         if command['down_pressed']:

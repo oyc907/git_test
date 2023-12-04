@@ -18,6 +18,12 @@ filename="Student_40.png"
 subject_filename="Subject_50.png"
 backg_filename="Earth.png"
 
+explode_1_flename="Explode_1(50).png"
+explode_2_flename="Explode_2(50).png"
+explode_3_flename="Explode_3(50).png"
+explode_4_flename="Explode_4(50).png"
+
+
 def main():
     joystick = Joystick()
     my_image = Image.new("RGB", (joystick.width, joystick.height))
@@ -31,12 +37,21 @@ def main():
     # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
     
     Char_1=Image.open(filename) #움직일 character의 그림
-    Char_1_border = ImageOps.expand(Char_1, border=1, fill='red')   #image의 경계선 그림
-
+    Char_1_border = ImageOps.expand(Char_1, border=1, fill='red')   #image의 경계선(border)를 그림
+    Char_img_list=[]
 
     Subject_img=Image.open(subject_filename) #Enemy(과목)의 그림
     Subject_img_border = ImageOps.expand(Subject_img, border=1, fill='blue')
+
     back_g=Image.open(backg_filename)   #배경 이미지
+
+    explode_1=Image.open(explode_1_flename) #터지는 이미지
+    explode_2=Image.open(explode_2_flename)
+    explode_3=Image.open(explode_3_flename)
+    explode_4=Image.open(explode_4_flename)
+    explode_img_list=[explode_1,explode_2,explode_3,explode_4]
+
+
     Student= Character(joystick.width, joystick.height)
     
     enemy_1 = Enemy((50, 50),0,0)
@@ -98,10 +113,11 @@ def main():
         my_image.paste(Char_1_border,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
 
 
-
+        
 
         #_, _, _, mask = Subject_img.split()
         _, _, _, mask = Subject_img_border.split()
+
         # for enemy in enemys_list:
         #     my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
         
@@ -119,6 +135,14 @@ def main():
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
                 enemy.die_flag=1  # enemy.state == 'die' 의 판단을 한번만 하도록 하기위함(timer ISR 여러번 실행 방지)
+                #for i in range (1,4):
+                for explode_img in explode_img_list:
+                    _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
+                    #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
+                    my_image.paste(explode_img,tuple((enemy.center)-25),mask_1) 
+                
+                
+                    
 
                 
         
@@ -131,7 +155,7 @@ def main():
 
         for bullet in bullets:
             if bullet.state != 'hit':
-                my_draw.rectangle(tuple(bullet.position), outline = bullet.outline, fill = (0, 0, 255))
+                my_draw.rectangle(tuple(bullet.position), outline = bullet.outline, fill = (255, 255, 0))
             else:
                 bullets.remove(bullet)  #총알이 계속 list에 존재하는 것 방지
 
@@ -150,7 +174,7 @@ def timer(count,enemy):
     t=threading.Timer(1,timer,args=(count,enemy,))    #"enemy"말고 마지막에 "enemy,"로 꼭 ,붙이기!!!!
    
     t.start()
-    if count >=5:   #timer 시간
+    if count >=3:   #timer 시간
         count=0     #timer 초기화
         enemy.sign_regen=1    # regen함수를 실행 시키기 위함
         print("Jam",enemy)
