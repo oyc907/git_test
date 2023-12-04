@@ -1,4 +1,4 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import time
 import random
 import cv2 as cv
@@ -14,8 +14,8 @@ from Joystick import Joystick
 
 #count=0
 
-filename="Student_20.png"
-subject_filename="Subject_25.png"
+filename="Student_40.png"
+subject_filename="Subject_50.png"
 backg_filename="Earth.png"
 
 def main():
@@ -27,11 +27,15 @@ def main():
 
     # joystick.disp.image(my_image)
     # # 잔상이 남지 않는 코드 & 대각선 이동 가능
-    # my_circle = Character(joystick.width, joystick.height)
+    my_circle = Character(joystick.width, joystick.height)
     # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
     
     Char_1=Image.open(filename) #움직일 character의 그림
+    Char_1_border = ImageOps.expand(Char_1, border=1, fill='red')   #image의 경계선 그림
+
+
     Subject_img=Image.open(subject_filename) #Enemy(과목)의 그림
+    Subject_img_border = ImageOps.expand(Subject_img, border=1, fill='blue')
     back_g=Image.open(backg_filename)   #배경 이미지
     Student= Character(joystick.width, joystick.height)
     
@@ -70,7 +74,7 @@ def main():
             bullet = Bullet(Student.center, command)
             bullets.append(bullet)
 
-        #my_circle.move(command)
+        my_circle.move(command)
         Student.move(command)
         for bullet in bullets:
             bullet.collision_check(enemys_list)
@@ -82,16 +86,22 @@ def main():
         # my_circle.collision_check(enemys_list)    
         # #그리는 순서가 중요합니다. 배경을 먼저 깔고 위에 그림을 그리고 싶었는데 그림을 그려놓고 배경으로 덮는 결과로 될 수 있습니다.
         # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
-        # my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
+        my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
         # #print("position: ",my_circle.position[0],my_circle.position[1],my_circle.position[2],my_circle.position[3])
         # #print("center: ",my_circle.center[0],my_circle.center[1])
 
 
         Student.collision_check(enemys_list)
-        _, _, _, mask = Char_1.split()
-        my_image.paste(Char_1,tuple((Student.center)),mask)     #투명부분은 안 보이도록 설정
+        # _, _, _, mask = Char_1.split()
+        # my_image.paste(Char_1,tuple((Student.center)),mask)     #투명부분은 안 보이도록 설정
+        _, _, _, mask = Char_1_border.split()
+        my_image.paste(Char_1_border,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
 
-        _, _, _, mask = Subject_img.split()
+
+
+
+        #_, _, _, mask = Subject_img.split()
+        _, _, _, mask = Subject_img_border.split()
         # for enemy in enemys_list:
         #     my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
         
@@ -100,9 +110,10 @@ def main():
 
         for enemy in enemys_list:
             if enemy.state != 'die':
-                #my_draw.ellipse(tuple(enemy.position), outline = enemy.outline, fill = (255, 0, 0))
+                my_draw.ellipse(tuple(enemy.position), outline = enemy.outline, fill = (255, 0, 0))
                 
-                my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
+                #my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
+                my_image.paste(Subject_img_border,tuple((enemy.center)-25),mask)     #투명부분은 안 보이도록 설정
             
             elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
