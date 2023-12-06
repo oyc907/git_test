@@ -39,11 +39,20 @@ class Character:
             if command['right_pressed']:
                 self.position[0] += 5
                 self.position[2] += 5
+            
                 
         #center update
         #self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2]) 
         self.center = np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
 
+    def attack(self, command = None):
+        if command['A_pressed'] == False:
+            self.state = None
+            self.outline = "#FFFFFF" #흰색상 코드!
+        else:
+            self.state = 'attack'
+            self.outline = "#FF0000" #빨강색상 코드!
+    
 
     def collision_check(self, enemys):
         for enemy in enemys:
