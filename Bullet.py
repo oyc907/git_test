@@ -1,7 +1,7 @@
 import numpy as np
 
 class Bullet:
-    def __init__(self, position, command):
+    def __init__(self, position, command,flag_lr):
         self.appearance = 'rectangle'
         self.speed = 10
         self.damage = 10
@@ -10,33 +10,48 @@ class Bullet:
         self.direction = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
         self.state = None
         self.outline = "#FFFF00"
-        if command['up_pressed']:
-            self.direction['up'] = True
-        if command['down_pressed']:
-            self.direction['down'] = True
-        if command['right_pressed']:
+        # if command['up_pressed']:
+        #     self.direction['up'] = True
+        # if command['down_pressed']:
+        #     self.direction['down'] = True
+            
+        # if command['right_pressed']:
+        if not flag_lr:
             self.direction['right'] = True
-        if command['left_pressed']:
-            self.direction['left'] = True
 
+        # if command['left_pressed']:
+        elif flag_lr:
+            self.direction['left'] = True
+        
+        
         
 
     def move(self):
-        if self.direction['up']:
-            self.position[1] -= self.speed
-            self.position[3] -= self.speed
+        # if self.direction['up']:
+        #     self.position[1] -= self.speed
+        #     self.position[3] -= self.speed
 
-        if self.direction['down']:
-            self.position[1] += self.speed
-            self.position[3] += self.speed
+        # if self.direction['down']:
+        #     self.position[1] += self.speed
+        #     self.position[3] += self.speed
 
-        if self.direction['left']:
-            self.position[0] -= self.speed
-            self.position[2] -= self.speed
-            
-        if self.direction['right']:
+        # if self.direction['left']:
+        #     self.position[0] -= self.speed
+        #     self.position[2] -= self.speed
+
+         
+        # if self.direction['right']:
+
+        # if not flag_lr: #오른쪽
+        if self.direction['right'] == True:
             self.position[0] += self.speed
             self.position[2] += self.speed
+
+
+        else:   #왼쪽
+
+            self.position[0] -= self.speed
+            self.position[2] -= self.speed
         
         
         #center update

@@ -77,7 +77,10 @@ Char_r_3=Image.open(filename_right_3)
 Char_r_4=Image.open(filename_right_4)
 Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
+
+flag_attack=0  #attack동작 구현 위한 전역변수
 def main():
+    # global back_g   #Character 동작 보이기 위해
     joystick = Joystick()
     # my_image = Image.new("RGBA", (joystick.width, joystick.height))
     # my_image = Image.new("RGB", (joystick.width, joystick.height))
@@ -139,12 +142,15 @@ def main():
 
     flag=0    #움직일 때, 걷는 것처럼 구현하기 위한 flag
     
+
+    flag_lr=0     #총알 발사 시, 왼쪽 OR 오른쪽 발사
     
     while True:
         # joystick = Joystick()
         # # my_image = Image.new("RGB", (joystick.width, joystick.height))
         joystick.disp.image(my_image)
         my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
+        # back_g=image_f
         
         
 
@@ -163,6 +169,7 @@ def main():
         if not joystick.button_L.value:  # left pressed
             command['left_pressed'] = True
             command['move'] = True
+            flag_lr=1
             flag=~flag
             if flag:
                 Char=ImageOps.expand(Char_l_2, border=1, fill='red')   #image의 경계선(border)를 그림 
@@ -177,6 +184,7 @@ def main():
         if not joystick.button_R.value:  # right pressed
             command['right_pressed'] = True
             command['move'] = True
+            flag_lr=0
             flag=~flag
             if flag:
                 Char=ImageOps.expand(Char_r_1, border=1, fill='red')   #image의 경계선(border)를 그림
@@ -188,11 +196,14 @@ def main():
 
         if not joystick.button_A.value: # A pressed
             # bullet = Bullet(my_circle.center, command)
-            # bullet = Bullet(Student.center, command)
-            # bullets.append(bullet)
+            
             command['A_pressed'] = True
             command['move'] = True
-            Student.state='attack'
+            bullet = Bullet(Student.center, command,flag_lr)
+            bullets.append(bullet)
+            
+            # bullet.move(command)
+            # Student.state='attack'
             # print(Student.state)
             # th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
             # th_1.start()
@@ -224,21 +235,24 @@ def main():
         # # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
         # my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
 
-        if Student.state != 'attack':
-            _, _, _, mask = Char.split()
-            # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
-            my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
-        else:
-            # for img in Char_r_list:
-            #     Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
-            #     _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
-            #     #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-            #     my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
-                
-            #     joystick.disp.image(my_image)    
-            #     my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
-            th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
-            th_1.start()
+        # if Student.state != 'attack':
+        #     _, _, _, mask = Char.split()
+        #     # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
+        #     my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
+            
+        # else:
+        #     for img in Char_r_list:
+        #         Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
+        #         _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
+        #         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
+        #         my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
+        #         image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
+        #         image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
+        #         back_g=image_f
+        #         joystick.disp.image(my_image)    
+        #         my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
+        #     # th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
+        #     # th_1.start()
         
 
         #_, _, _, mask = Subject_img.split()
@@ -293,6 +307,31 @@ def main():
                 bullets.remove(bullet)  #총알이 계속 list에 존재하는 것 방지
 
     
+        if Student.state != 'attack' and not flag_attack:
+            _, _, _, mask = Char.split()
+            # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
+            my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
+            continue
+        elif Student.state == 'attack':
+            # for img in Char_r_list:
+            #     Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
+            #     _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
+            #     #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
+            #     my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
+            #     image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
+            #     image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
+            #     # back_g=image_f
+                
+            #     joystick.disp.image(my_image)    
+            #     # my_image.paste(image_f,(0,0))    #터지는 것 구현 시, back_g를 이용
+            # th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
+            # th_1.start()
+
+            _, _, _, mask = Char.split()
+            # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
+            my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)
+            continue
+
         #print(bullets)
 
         #좌표는 동그라미의 왼쪽 위, 오른쪽 아래 점 (x1, y1, x2, y2)
@@ -331,7 +370,10 @@ def show_Moving(Student,my_image):
     global back_g
     global back_g_origin
     global Char
+    global flag_attack
     for img in Char_r_list:
+    # for img in explode_img_list:
+        flag_attack=1
         Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
         _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
@@ -345,8 +387,9 @@ def show_Moving(Student,my_image):
         back_g=image_f
         
           
-        time.sleep(0.5)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
+        time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
     print("show_Moving over")
+    flag_attack=0
     back_g=back_g_origin
             
         
