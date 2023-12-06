@@ -64,8 +64,8 @@ explode_img_list=[explode_1,explode_2,explode_3,explode_4,explode_5,explode_6,ex
 
 joystick = Joystick()
 # my_image = Image.new("RGB", (joystick.width, joystick.height))
-my_image = Image.new("RGBA", (joystick.width, joystick.height)) #RGB말고, RGBA로 해야 ImageChops.subtract 이용가능
-return_val=0    #전역변수로 선언
+my_image = Image.new("RGBA", (joystick.width, joystick.height)) #RGB말고, RGBA로 해야 ImageChops 이용가능
+
 back_g=Image.open(backg_filename)   #배경 이미지
 back_g_origin=Image.open(backg_filename)
 def main():
@@ -129,13 +129,13 @@ def main():
     bullets = []
 
     flag=0    #움직일 때, 걷는 것처럼 구현하기 위한 flag
-    global sign_regen   # 전역 변수 sign_regen을 사용
-    # return_val=0
+    
+    
     while True:
         # joystick = Joystick()
         # # my_image = Image.new("RGB", (joystick.width, joystick.height))
         joystick.disp.image(my_image)
-        my_image.paste(back_g,(0,0))    #이 부분을 잘 생각해서 터지는 거 구현하자. 
+        my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
         
         
 
@@ -227,52 +227,17 @@ def main():
                 # my_image.paste(Subject_img_border,tuple((enemy.center)-25),mask)     #투명부분은 안 보이도록 설정
                 my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
                          
-            # elif enemy.die_flag==0 and enemy.state == 'die':
-            #     print("enemy.state: ",enemy.state,"enemy: ",enemy)
-            #     timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
-            #     enemy.die_flag=1  # enemy.state == 'die' 의 판단을 한번만 하도록 하기위함(timer ISR 여러번 실행 방지)
-                
-            
-            #     th=threading.Thread(target=show_Explode,args=(my_image,enemy,))
-            #     th.start()
-                # for explode_img in explode_img_list:
-                #     th=threading.Thread(target=show_Explode,args=(my_image,explode_img,enemy,))
-                #     th.start()
-                
-                # for explode_img in explode_img_list:
-                #     _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
-                #     #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-                #     my_image.paste(explode_img,tuple((enemy.center)-enemy.width_ego),mask_1) 
-                #     joystick.disp.image(my_image)   #그냥 넣으면 polled I/O 처럼 순간 멈춘다 thread 따로 만들어야 할듯
-                #     print("wow polled")
-                #     # my_image.paste(back_g,(0,0))
-                # enemy.regen((-30,-30),0,0) 
-                # 안보이는 곳으로 옮김으로써 터진 위치에서 계속 hit 판정을 안나도록 함
-                # (이래야 총알이 방금 맞혔던 자리 지나가도 보임)
-                
-        for enemy in enemys_list:
-            if enemy.die_flag==0 and enemy.state == 'die':
+            elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
                 enemy.die_flag=1  # enemy.state == 'die' 의 판단을 한번만 하도록 하기위함(timer ISR 여러번 실행 방지)
-                    
+                
+            
                 th=threading.Thread(target=show_Explode,args=(enemy,my_image))
                 th.start()
-                # show_Explode(my_image,enemy)
                 
-                # if return_val:
-                #     joystick.disp.image(my_image)
-                #     print("joystick return_val: ",return_val)
-               
-                # for explode_img in explode_img_list:
-                #     _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
-                #     #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-                    
-                #     my_image.paste(explode_img,tuple((enemy.center)-enemy.width_ego),mask_1) 
-                #     # joystick.disp.image(my_image)   #그냥 넣으면 polled I/O 처럼 순간 멈춘다 thread 따로 만들어야 할듯
-                #     print("wow polled")
                 
-                    
+    
         for img in Char_r_list:
                 Char_1=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
                 _, _, _, mask = Char_1.split()
@@ -288,8 +253,8 @@ def main():
         for enemy in enemys_list:
             if enemy.sign_regen==1:
                 print("hi",enemy)
-                enemy.regen((enemy.center),0,0) 
-                # enemy.regen((random.randint(0,240),random.randint(0,240)),0,0)
+                # enemy.regen((enemy.center),0,0) 
+                enemy.regen((random.randint(0,240),random.randint(0,240)),0,0)
 
         for bullet in bullets:
             if bullet.state != 'hit':
@@ -307,53 +272,17 @@ def main():
 
         
         
-        # def show_Explode(enemy,back_g):     #터지는 장면 보이기 위해 thread 함수 정의
-        #     # global my_image
-        #     # global explode_img_list
-        #     global return_val
-        #     # global back_g
-        #     return_val=0
-            
-        #     for explode_img in explode_img_list:
-        #         _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
-        #         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-        #         my_image.paste(explode_img,tuple((enemy.center)-enemy.width_ego),mask_1) 
-        #         # my_image.paste(explode_img,(50,200),mask_1) 
-        #         # timer_1(0)
-        #         # joystick.disp.image(my_image)
-
-        #         back_g=Image.open(explode_1_flename)
-        #         # back_g=my_image
-        #         # my_image.paste(back_g,(0,0))    
-        #         time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
-        #         print("wow ",explode_img)
-        #         # return_val=1+return_val
-        #         # print("return_val: ",return_val)
-        #         # joystick.disp.image(my_image)
-        #         # return_val=0
-        #     print("show_Explode over")
-        #     back_g=Image.open(explode_1_flename)
+        
 def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 함수 정의
-    
-    # global explode_img_list
-    global return_val
     global back_g
     global back_g_origin
-    return_val=0
-    
-    # width, height = back_g.size
-    # print("back_g size: ",width, height)
-    # width, height = my_image.size
-    # print("my_image size: ",width, height)
-    
     for explode_img in explode_img_list:
         _, _, _, mask_1 = explode_img.split()   #투명부분은 안 보이도록 설정
         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
         my_image.paste(explode_img,tuple((enemy.center)-enemy.width_ego),mask_1) 
         
-        # my_image.paste(explode_img,(50,200),mask_1) 
         # timer_1(0)
-        # joystick.disp.image(my_image)
+        # joystick.disp.image(my_image) #그냥 쓰면 검은 화면만 나옴...
 
         image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
         image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
@@ -361,20 +290,18 @@ def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 
         
           
         time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
-        
-        print("wow ",explode_img)
-                # return_val=1+return_val
-                # print("return_val: ",return_val)
-                # joystick.disp.image(my_image)
-                # return_val=0
     print("show_Explode over")
     back_g=back_g_origin
+    enemy.regen((-30,-30),0,0)
+    # 안보이는 곳으로 옮김으로써 터진 위치에서 계속 hit 판정을 안나도록 함
+    # (이래야 총알이 방금 맞혔던 자리 지나가도 보임)
             
+
             
             
         
 
-#def timer():
+
 def timer(count,enemy):
     #global count   #global로 하면 동시에 여러개 timer 동작 못함
     count+=1
