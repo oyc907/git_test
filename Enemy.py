@@ -49,8 +49,22 @@ class Enemy:
         self.die_flag=die_flag
         self.sign_regen=sign_regen
 
-        
-    
+
+    def move(self,Character):
+        if Character.center[0]!=self.center[0] :
+            if Character.center[0]>self.center[0]:
+                # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
+                self.center[0]+=1
+            if Character.center[0]<self.center[0]:
+                # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
+                self.center[0]-=1
+        if Character.center[1]!=self.center[1] :
+            if Character.center[1]>self.center[1]:
+                # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
+                self.center[1]+=1
+            if Character.center[1]<self.center[1]:
+                # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
+                self.center[1]-=1
 
 
         

@@ -200,6 +200,7 @@ def main():
             command['A_pressed'] = True
             command['move'] = True
             bullet = Bullet(Student.center, command,flag_lr)
+            # bullet = Bullet(Student.center, command)
             bullets.append(bullet)
             
             # bullet.move(command)
@@ -269,6 +270,7 @@ def main():
                 
                 #my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
                 # my_image.paste(Subject_img_border,tuple((enemy.center)-25),mask)     #투명부분은 안 보이도록 설정
+                
                 my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
                          
             elif enemy.die_flag==0 and enemy.state == 'die':
@@ -291,7 +293,8 @@ def main():
         #         #my_image.paste(back_g,(0,0))
                 
                 
-        
+        for enemy in enemys_list:
+            enemy.move(Student)
        
 
         for enemy in enemys_list:
@@ -361,7 +364,7 @@ def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 
         time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
     print("show_Explode over")
     back_g=back_g_origin
-    enemy.regen((-30,-30),0,0)
+    enemy.regen((-60,-60),0,0)
     # 안보이는 곳으로 옮김으로써 터진 위치에서 계속 hit 판정을 안나도록 함
     # (이래야 총알이 방금 맞혔던 자리 지나가도 보임)
             

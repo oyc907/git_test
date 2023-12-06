@@ -23,6 +23,20 @@ class Bullet:
         elif flag_lr:
             self.direction['left'] = True
         
+
+
+        # if command['up_pressed']:
+        #     self.direction['up'] = True
+        # if command['down_pressed']:
+        #     self.direction['down'] = True
+            
+        # if command['right_pressed']:
+        # # if not flag_lr:
+        #     self.direction['right'] = True
+
+        # if command['left_pressed']:
+        # # elif flag_lr:
+        #     self.direction['left'] = True
         
         
 
@@ -52,6 +66,37 @@ class Bullet:
 
             self.position[0] -= self.speed
             self.position[2] -= self.speed
+
+
+
+
+
+
+        # if self.direction['up']:
+        #     self.position[1] -= self.speed
+        #     self.position[3] -= self.speed
+
+        # if self.direction['down']:
+        #     self.position[1] += self.speed
+        #     self.position[3] += self.speed
+
+        # if self.direction['left']:
+        #     self.position[0] -= self.speed
+        #     self.position[2] -= self.speed
+
+         
+        # # if self.direction['right']:
+
+        # # if not flag_lr: #오른쪽
+        # if self.direction['right'] == True:
+        #     self.position[0] += self.speed
+        #     self.position[2] += self.speed
+
+
+        # # else:   #왼쪽
+        # if self.direction['left']:
+        #     self.position[0] -= self.speed
+        #     self.position[2] -= self.speed
         
         
         #center update
