@@ -15,6 +15,9 @@ class Character:
         self.width_ego=20   #Character가 차지하는 width,height (내가 설정하기 나름)
         self.height_ego=20
 
+        self.life=3
+        self.score=0
+
     def move(self, command = None):
         if command['move'] == False:
             self.state = None
@@ -61,7 +64,8 @@ class Character:
             
             if collision:
                 enemy.state = 'die'
-                self.state = 'hit' #hit 대신 life 감소하는 것으로 바꾸기
+                # self.state = 'hit' #hit 대신 life 감소하는 것으로 바꾸기
+                self.life -=1   #life 감소
 
     #def overlap(self, ego_center, other_center,other_die_flag):
     def overlap(self, ego, other):

@@ -14,13 +14,17 @@ import time
 
 
 
-
 joystick = Joystick()
 #filename="Enemy_3.png"
 filename="astronaut_cut(70)_normal_after.png"
 subject_filename="subject_1(25).png"
 backg_filename="Earth.png"
 
+
+bbox     = (0,0,joystick.width,joystick.height)
+text_pos = (bbox[0]+3,bbox[1])
+# font=ImageFont.truetype("arial.ttf", 15) 
+font=ImageFont.load_default()
 def main():
     joystick = Joystick()
     my_image = Image.new("RGB", (joystick.width, joystick.height))
@@ -29,6 +33,7 @@ def main():
 
     my_draw = ImageDraw.Draw(my_image)
 
+    my_draw.text(text_pos,'Hello',(255,255,255),font=font)
     
     Char_1=Image.open(filename) #움직일 character의 그림
     back_g=Image.open(backg_filename)   #배경 이미지
@@ -44,7 +49,7 @@ def main():
 
     bullets = []
     while True:
-        
+        my_draw.text(text_pos,'Hello',(255,255,255),font=font)
         command = {'move': False, 'up_pressed': False , 'down_pressed': False, 'left_pressed': False, 'right_pressed': False}
         
         if not joystick.button_U.value:  # up pressed

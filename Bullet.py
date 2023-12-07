@@ -105,7 +105,8 @@ class Bullet:
         #center update
         self.center = np.array([(self.position[0] + self.position[2]) / 2, (self.position[1] + self.position[3]) / 2])
             
-    def collision_check(self, enemys):
+    def collision_check(self, enemys,Character):
+        
         for enemy in enemys:
             # collision = self.overlap(self.position, enemy.position)
             collision = self.overlap(self, enemy)
@@ -113,6 +114,7 @@ class Bullet:
             if collision:
                 enemy.state = 'die'
                 self.state = 'hit'
+                Character.score+=1
                 print("Bullet!! collision bullet: ",self.center,enemy.center)
 
     # def overlap(self, ego_position, other_position):

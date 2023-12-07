@@ -34,6 +34,9 @@ filename_down="Student_down_40.png"
 
 subject_filename="Subject_50.png"
 backg_filename="Earth.png"
+game_over_filename="GAME_OVER.png"
+game_start_filename="GAME_START.png"
+game_clear_filename="GAME_CLEAR.png"
 
 # explode_1_flename="prac_Explode_1(50).png"
 # explode_2_flename="prac_Explode_2(50).png"
@@ -69,6 +72,9 @@ my_image = Image.new("RGBA", (joystick.width, joystick.height)) #RGB말고, RGBA
 back_g=Image.open(backg_filename)   #배경 이미지
 back_g_origin=Image.open(backg_filename)
 
+game_over=Image.open(game_over_filename)
+game_start=Image.open(game_start_filename)
+game_clear=Image.open(game_clear_filename)
 
 Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
 Char_r_1=Image.open(filename_right_1) 
@@ -79,6 +85,15 @@ Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
 
 flag_attack=0  #attack동작 구현 위한 전역변수
+
+bbox     = (0,0,joystick.width,joystick.height)
+text_pos = (bbox[0],bbox[1])
+# font=ImageFont.truetype("Oswald-VariableFont_wght.ttf", 20) 
+font=ImageFont.load_default()
+
+image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
+image_f=ImageChops.add(back_g_origin,image)
+stage=1
 def main():
     # global back_g   #Character 동작 보이기 위해
     
@@ -128,11 +143,14 @@ def main():
 
     Student= Character(joystick.width, joystick.height)
     
-    enemy_1 = Enemy((50, 50),0,0)
-    enemy_2 = Enemy((200, 200),0,0)
-    enemy_3 = Enemy((150, 50),0,0)
+    enemy_1 = Enemy((5, 60),0,0)
+    enemy_2 = Enemy((5, 90),0,0)
+    enemy_3 = Enemy((5, 120),0,0)
+    enemy_4 = Enemy((235, 60),0,0)
+    enemy_5 = Enemy((235, 90),0,0)
+    enemy_6 = Enemy((235, 120),0,0)
 
-    enemys_list = [enemy_1, enemy_2, enemy_3]
+    enemys_list = [enemy_1, enemy_2, enemy_3,enemy_4, enemy_5, enemy_6]
 
 
     bullets = []
@@ -141,15 +159,23 @@ def main():
     
 
     flag_lr=0     #총알 발사 시, 왼쪽 OR 오른쪽 발사
-    
+    stage=1
+    # my_draw.text(text_pos,'Hello',(255,255,255),font=font)
+    while joystick.button_B.value:
+        joystick.disp.image(game_start)  
     while True:
+        
+
         # joystick = Joystick()
         # # my_image = Image.new("RGB", (joystick.width, joystick.height))
         joystick.disp.image(my_image)
         my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
         # back_g=image_f
-        
-        
+        # text='life: '+Student
+        text=['life: ',str(Student.life),'score: ',str(Student.score),'stage: ']
+        my_draw.text(text_pos,text[0]+text[1],(255,255,255),font=font)
+        my_draw.text((0,10),text[2]+text[3],(255,255,255),font=font)
+        my_draw.text((180,0),text[4]+str(stage),(255,255,255),font=font)
 
         command = {'move': False, 'up_pressed': False , 'down_pressed': False, 'left_pressed': False, 'right_pressed': False, 'A_pressed': False}
         
@@ -214,7 +240,7 @@ def main():
         for bullet in bullets:
             bullet.move()
             bullet.hit_wall_check(joystick.width, joystick.height)    #벽에 닿으면 hit 판정
-            bullet.collision_check(enemys_list)
+            bullet.collision_check(enemys_list,Student)
 
         
             
@@ -251,9 +277,11 @@ def main():
             if enemy.sign_regen==1:
                 print("hi",enemy)
                 # enemy.regen((enemy.center),0,0) 
-                
-                enemy.regen((235,random.randint(0,240)),0,0)
-                
+                select=random.randint(0,2)
+                if select==0:
+                    enemy.regen((235,random.randint(0,240)),0,0)
+                elif select==1:
+                    enemy.regen((5,random.randint(0,240)),0,0)
                 
     
         # for img in Char_r_list:
@@ -311,6 +339,40 @@ def main():
             # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
             my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)
             # continue
+
+
+
+        if Student.life<=0:
+            
+            while joystick.button_B.value:
+                joystick.disp.image(game_over)    
+                stage=1
+            Student.life=3
+            Student.score=0
+            
+            enemy_1.regen((5,60),0,0)
+            enemy_2.regen((5, 90),0,0)
+            enemy_3.regen((5, 120),0,0)
+            enemy_4.regen((235, 60),0,0)
+            enemy_5.regen((235, 90),0,0)
+            enemy_6.regen((235, 120),0,0)
+            
+        if Student.score>=18:
+            stage+=1
+            Student.score=0
+        if stage==5:
+            while joystick.button_B.value:
+                joystick.disp.image(game_clear)    
+                stage=1
+            Student.life=3
+            Student.score=0
+            
+            enemy_1.regen((5,60),0,0)
+            enemy_2.regen((5, 90),0,0)
+            enemy_3.regen((5, 120),0,0)
+            enemy_4.regen((235, 60),0,0)
+            enemy_5.regen((235, 90),0,0)
+            enemy_6.regen((235, 120),0,0)
 
         # print("bullets: ",bullets)
 
