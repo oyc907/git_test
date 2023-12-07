@@ -353,12 +353,12 @@ def main():
         my_draw.text((0,10),text[2]+text[3],(255,255,255),font=font)
         my_draw.text((180,0),text[4]+str(stage),(255,255,255),font=font)
 
-        if Student.life<=0:
+        if Student.life<=0: #life 모두 소모
             
             while joystick.button_B.value:
                 joystick.disp.image(game_over)    
                 stage=1
-            Student.life=3
+            Student.life=3      #초기화
             Student.score=0
             
             Student= Character(joystick.width, joystick.height)
@@ -375,14 +375,14 @@ def main():
             my_image.paste(back_g_origin,(0,0))
             # joystick.disp.image(my_image)
             
-        if Student.score>=18:
+        if Student.score>=18:   #한 stage clear
             stage+=1
             Student.score=0
-        if stage==5:
+        if stage==5:            #전체 stage clear
             while joystick.button_B.value:
                 joystick.disp.image(game_clear)    
                 stage=1
-            Student.life=3
+            Student.life=3      #초기화
             Student.score=0
             
             Student= Character(joystick.width, joystick.height)
