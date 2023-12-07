@@ -10,6 +10,9 @@ class Bullet:
         self.direction = {'up' : False, 'down' : False, 'left' : False, 'right' : False}
         self.state = None
         self.outline = "#FFFF00"
+
+        self.width_ego=3   #Bullet가 차지하는 width,height (내가 설정하기 나름)
+        self.height_ego=3
         # if command['up_pressed']:
         #     self.direction['up'] = True
         # if command['down_pressed']:
@@ -104,13 +107,16 @@ class Bullet:
             
     def collision_check(self, enemys):
         for enemy in enemys:
-            collision = self.overlap(self.position, enemy.position)
+            # collision = self.overlap(self.position, enemy.position)
+            collision = self.overlap(self, enemy)
             
             if collision:
                 enemy.state = 'die'
                 self.state = 'hit'
+                print("Bullet!! collision bullet: ",self.center,enemy.center)
 
-    def overlap(self, ego_position, other_position):
+    # def overlap(self, ego_position, other_position):
+    def overlap(self, ego, other):
         '''
         두개의 사각형(bullet position, enemy position)이 겹치는지 확인하는 함수
         좌표 표현 : [x1, y1, x2, y2]
@@ -119,9 +125,44 @@ class Bullet:
             True : if overlap
             False : if not overlap
         '''
-        return ego_position[0] > other_position[0] and ego_position[1] > other_position[1] \
-                 and ego_position[2] < other_position[2] and ego_position[3] < other_position[3]
-        #return에서 \은 그저 줄바꿈
+        # return ego_position[0] > other_position[0] and ego_position[1] > other_position[1] \
+        #          and ego_position[2] < other_position[2] and ego_position[3] < other_position[3]
+        # #return에서 \은 그저 줄바꿈
+
+
+
+
+        if not other.die_flag and ego.center[0]<=other.center[0] and ego.center[1]>=other.center[1]:
+        # 주인공의 오른쪽 위에 Enemy가 존재
+        # not other_die_flag를 하는 이유는 닿는 판정을 한번만 하기위해서
+            if (ego.center[0]+ego.width_ego)>=(other.center[0]-other.width_ego) and (ego.center[1]-ego.height_ego)<=(other.center[1]+other.height_ego):
+            # 부딪혔을 때
+                return 1 
+            else:
+                return 0
+        if not other.die_flag and ego.center[0]>=other.center[0] and ego.center[1]>=other.center[1]:
+        # 주인공의 왼쪽 위에 Enemy가 존재
+            if (ego.center[0]-ego.width_ego)<=(other.center[0]+other.width_ego) and (ego.center[1]-ego.height_ego)<=(other.center[1]+other.height_ego):
+            # 부딪혔을 때
+                return 1 
+            else:
+                return 0
+        if not other.die_flag and ego.center[0]>=other.center[0] and ego.center[1]<=other.center[1]:
+        #주인공의 왼쪽 아래에 Enemy가 존재
+            if (ego.center[0]-ego.width_ego)<=(other.center[0]+other.width_ego) and (ego.center[1]+ego.height_ego)>=(other.center[1]-other.height_ego):
+            # 부딪혔을 때
+                return 1 
+            else:
+                return 0
+        if not other.die_flag and ego.center[0]<=other.center[0] and ego.center[1]<=other.center[1]:
+        #주인공의 오른쪽 아래에 Enemy가 존재
+            if (ego.center[0]+ego.width_ego)>=(other.center[0]-other.width_ego) and (ego.center[1]+ego.height_ego)>=(other.center[1]-other.height_ego):
+            # 부딪혔을 때
+                return 1 
+            else:
+                return 0
+
+
     
     def hit_wall_check(self,width,height):
         if self.center[0]>width or self.center[0]<=0:    #x좌표가 화면 밖으로 넘어감

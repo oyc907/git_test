@@ -51,6 +51,12 @@ class Enemy:
 
 
     def move(self,Character):
+        # self.appearance = 'circle'
+        # self.state = 'alive'
+        # self.outline = "#00FF00"
+
+        
+
         if Character.center[0]!=self.center[0] :
             if Character.center[0]>self.center[0]:
                 # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
@@ -66,25 +72,7 @@ class Enemy:
                 # self.center=np.array([int((self.position[0] + self.position[2]) / 2), int((self.position[1] + self.position[3]) / 2)])
                 self.center[1]-=1
 
-
-        
-def timer():
-    global count
-    #global sign_regen
-    count+=1
-    print(count)
-    t=threading.Timer(1,timer)
-    t.start()
-    if count ==5:
-        count=0
-        #sign_regen=1
-        Enemy.sign_regen=1    # regen함수를 실행 시키기 위함
-        #Ene.regen(spawn_position)
-        print("타이머를 멈춥니다")
-        t.cancel()
-        
-    
-#Enemy.regen(100,5)
+   
 
     
 

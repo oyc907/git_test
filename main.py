@@ -81,17 +81,14 @@ Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)
 flag_attack=0  #attack동작 구현 위한 전역변수
 def main():
     # global back_g   #Character 동작 보이기 위해
-    joystick = Joystick()
-    # my_image = Image.new("RGBA", (joystick.width, joystick.height))
-    # my_image = Image.new("RGB", (joystick.width, joystick.height))
+    
     my_draw = ImageDraw.Draw(my_image)
-    #my_draw.rectangle((0, 0, joystick.width, joystick.height), fill=(255, 0, 0, 100))
+    
     
 
-    # joystick.disp.image(my_image)
-    # # 잔상이 남지 않는 코드 & 대각선 이동 가능
+    
     my_circle = Character(joystick.width, joystick.height)
-    # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
+    
     
      
     Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
@@ -109,7 +106,7 @@ def main():
     Char_3=Image.open(filename_up) #움직일 character의 그림(위쪽)
     Char_4=Image.open(filename_down) #움직일 character의 그림(아래쪽)
     
-    #Char=ImageOps.expand(Char_1, border=1, fill='red')   #image의 경계선(border)를 그림
+    
     Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
 
     
@@ -208,61 +205,27 @@ def main():
             # print(Student.state)
             # th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
             # th_1.start()
-        
+        # for bullet in bullets:
+        #     bullet.move()
 
         my_circle.move(command)
         Student.move(command)
         Student.attack(command)
         for bullet in bullets:
-            bullet.collision_check(enemys_list)
-            bullet.hit_wall_check(joystick.width, joystick.height)    #벽에 닿으면 hit 판정
             bullet.move()
+            bullet.hit_wall_check(joystick.width, joystick.height)    #벽에 닿으면 hit 판정
+            bullet.collision_check(enemys_list)
 
         
             
-        # my_circle.collision_check(enemys_list)    
-        # #그리는 순서가 중요합니다. 배경을 먼저 깔고 위에 그림을 그리고 싶었는데 그림을 그려놓고 배경으로 덮는 결과로 될 수 있습니다.
-        # my_draw.rectangle((0, 0, joystick.width, joystick.height), fill = (255, 255, 255, 100))
-        #my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
+        
+        # my_draw.ellipse(tuple(my_circle.position), outline = my_circle.outline, fill = (0, 0, 0))
         # print("position: ",my_circle.position[0],my_circle.position[1],my_circle.position[2],my_circle.position[3])
         # print("center: ",my_circle.center[0],my_circle.center[1])
 
 
         Student.collision_check(enemys_list)
-        # _, _, _, mask = Char_1.split()
-        # my_image.paste(Char_1,tuple((Student.center)),mask)     #투명부분은 안 보이도록 설정
-
-        # _, _, _, mask = Char.split()
-        # # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
-        # my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
-
-        # if Student.state != 'attack':
-        #     _, _, _, mask = Char.split()
-        #     # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
-        #     my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
-            
-        # else:
-        #     for img in Char_r_list:
-        #         Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
-        #         _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
-        #         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-        #         my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
-        #         image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
-        #         image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
-        #         back_g=image_f
-        #         joystick.disp.image(my_image)    
-        #         my_image.paste(back_g,(0,0))    #터지는 것 구현 시, back_g를 이용
-        #     # th_1=threading.Thread(target=show_Moving,args=(Student,my_image))
-        #     # th_1.start()
         
-
-        #_, _, _, mask = Subject_img.split()
-        _, _, _, mask = Subject_img_border.split()
-
-        
-        # jam jam
-        # joystick.disp.image(my_image)
-        # my_image.paste(back_g,(0,0))
 
         for enemy in enemys_list:
             if enemy.state != 'die':
@@ -270,17 +233,26 @@ def main():
                 
                 #my_image.paste(Subject_img,tuple((enemy.center)),mask)     #투명부분은 안 보이도록 설정
                 # my_image.paste(Subject_img_border,tuple((enemy.center)-25),mask)     #투명부분은 안 보이도록 설정
+                # enemy.collision_check(bullets)
+                enemy.move(Student)
                 
+                _, _, _, mask = Subject_img_border.split()
                 my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
-                         
+                
             elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
                 enemy.die_flag=1  # enemy.state == 'die' 의 판단을 한번만 하도록 하기위함(timer ISR 여러번 실행 방지)
                 
-            
+                
                 th=threading.Thread(target=show_Explode,args=(enemy,my_image))
                 th.start()
+                
+            if enemy.sign_regen==1:
+                print("hi",enemy)
+                # enemy.regen((enemy.center),0,0) 
+                
+                enemy.regen((235,random.randint(0,240)),0,0)
                 
                 
     
@@ -293,28 +265,33 @@ def main():
         #         #my_image.paste(back_g,(0,0))
                 
                 
-        for enemy in enemys_list:
-            enemy.move(Student)
+        # for enemy in enemys_list:
+        # #     enemy.move(Student)
+        #     enemy.collision_check(bullets)
        
 
-        for enemy in enemys_list:
-            if enemy.sign_regen==1:
-                print("hi",enemy)
-                # enemy.regen((enemy.center),0,0) 
-                enemy.regen((random.randint(0,240),random.randint(0,240)),0,0)
+        # for enemy in enemys_list:
+        #     if enemy.sign_regen==1:
+        #         print("hi",enemy)
+        #         # enemy.regen((enemy.center),0,0) 
+        #         enemy.regen((235,random.randint(0,240)),0,0)
 
         for bullet in bullets:
             if bullet.state != 'hit':
+                
                 my_draw.rectangle(tuple(bullet.position), outline = bullet.outline, fill = (255, 255, 0))
+                
             else:
+                
                 bullets.remove(bullet)  #총알이 계속 list에 존재하는 것 방지
+                
 
     
         if Student.state != 'attack' and not flag_attack:
             _, _, _, mask = Char.split()
             # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
             my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)     #투명부분은 안 보이도록 설정
-            continue
+            
         elif Student.state == 'attack':
             # for img in Char_r_list:
             #     Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
@@ -333,16 +310,17 @@ def main():
             _, _, _, mask = Char.split()
             # my_image.paste(Char,tuple((Student.center)-20),mask)     #투명부분은 안 보이도록 설정
             my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask)
-            continue
+            # continue
 
-        #print(bullets)
+        # print("bullets: ",bullets)
 
         #좌표는 동그라미의 왼쪽 위, 오른쪽 아래 점 (x1, y1, x2, y2)
         #joystick.disp.image(my_image)
         # joystick.disp.image(my_image)
         # my_image.paste(back_g,(0,0))
-
-        
+        # for bullet in bullets:
+        #     bullet.collision_check(enemys_list)
+            
         
         
 def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 함수 정의
@@ -362,7 +340,7 @@ def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 
         
           
         time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
-    print("show_Explode over")
+    # print("show_Explode over")
     back_g=back_g_origin
     enemy.regen((-60,-60),0,0)
     # 안보이는 곳으로 옮김으로써 터진 위치에서 계속 hit 판정을 안나도록 함
@@ -401,15 +379,15 @@ def show_Moving(Student,my_image):
 def timer(count,enemy):
     #global count   #global로 하면 동시에 여러개 timer 동작 못함
     count+=1
-    print(count)
+    # print(count)
     t=threading.Timer(1,timer,args=(count,enemy,))    #"enemy"말고 마지막에 "enemy,"로 꼭 ,붙이기!!!!
    
     t.start()
     if count >=3:   #timer 시간
         count=0     #timer 초기화
         enemy.sign_regen=1    # regen함수를 실행 시키기 위함
-        print("Jam",enemy)
-        print("타이머를 멈춥니다")
+        # print("Jam",enemy)
+        # print("타이머를 멈춥니다")
         t.cancel()      #timer 종료
 
 
