@@ -77,11 +77,11 @@ game_start=Image.open(game_start_filename)
 game_clear=Image.open(game_clear_filename)
 
 Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
-Char_r_1=Image.open(filename_right_1) 
-Char_r_2=Image.open(filename_right_2)
-Char_r_3=Image.open(filename_right_3)
-Char_r_4=Image.open(filename_right_4)
-Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
+# Char_r_1=Image.open(filename_right_1) 
+# Char_r_2=Image.open(filename_right_2)
+# Char_r_3=Image.open(filename_right_3)
+# Char_r_4=Image.open(filename_right_4)
+# Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
 
 flag_attack=0  #attack동작 구현 위한 전역변수
@@ -107,19 +107,19 @@ def main():
     
      
     Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
-    Char_r_1=Image.open(filename_right_1) 
-    Char_r_2=Image.open(filename_right_2)
-    Char_r_3=Image.open(filename_right_3)
-    Char_r_4=Image.open(filename_right_4)
-    Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
+    # Char_r_1=Image.open(filename_right_1) 
+    # Char_r_2=Image.open(filename_right_2)
+    # Char_r_3=Image.open(filename_right_3)
+    # Char_r_4=Image.open(filename_right_4)
+    # Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 
 
     Char_l_1=Image.open(filename_left_1) #움직일 character의 그림(왼쪽)
     Char_l_2=Image.open(filename_left_2) #움직일 character의 그림(왼쪽)
 
 
-    Char_3=Image.open(filename_up) #움직일 character의 그림(위쪽)
-    Char_4=Image.open(filename_down) #움직일 character의 그림(아래쪽)
+    # Char_3=Image.open(filename_up) #움직일 character의 그림(위쪽)
+    # Char_4=Image.open(filename_down) #움직일 character의 그림(아래쪽)
     
     
     Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
@@ -409,31 +409,31 @@ def show_Explode(enemy,my_image):     #터지는 장면 보이기 위해 thread 
     # (이래야 총알이 방금 맞혔던 자리 지나가도 보임)
             
 
-def show_Moving(Student,my_image):
-    global back_g
-    global back_g_origin
-    global Char
-    global flag_attack
-    for img in Char_r_list:
-    # for img in explode_img_list:
-        flag_attack=1
-        Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
-        _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
-        #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
-        my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
+# def show_Moving(Student,my_image):
+#     global back_g
+#     global back_g_origin
+#     global Char
+#     global flag_attack
+#     for img in Char_r_list:
+#     # for img in explode_img_list:
+#         flag_attack=1
+#         Char=ImageOps.expand(img, border=1, fill='red')   #image의 경계선(border)를 그림
+#         _, _, _, mask_1 = Char.split()   #투명부분은 안 보이도록 설정
+#         #mask를 mask_1으로 선언하여, 앞선 mask와 겹치지 않도록 함
+#         my_image.paste(Char,tuple((Student.center)-Student.width_ego),mask_1) 
         
-        # timer_1(0)
-        # joystick.disp.image(my_image) #그냥 쓰면 검은 화면만 나옴...
+#         # timer_1(0)
+#         # joystick.disp.image(my_image) #그냥 쓰면 검은 화면만 나옴...
 
-        image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
-        image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
-        back_g=image_f
+#         image = ImageChops.subtract(my_image,back_g)    #폭발하는 부분만 가져옴
+#         image_f=ImageChops.add(back_g_origin,image)     #기본 배경에 폭발하는 부분만 더함
+#         back_g=image_f
         
           
-        time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
-    print("show_Moving over")
-    flag_attack=0
-    back_g=back_g_origin
+#         time.sleep(0.05)    #이 정도의 시간 간격이 있어야 터지는 게 자연스럽게 보임(안그러면 너무 빠름)
+#     print("show_Moving over")
+#     flag_attack=0
+#     back_g=back_g_origin
             
         
 
