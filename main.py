@@ -175,9 +175,9 @@ def main():
         # back_g=image_f
         # text='life: '+Student
         text=['life: ',str(Student.life),'score: ',str(Student.score),'stage: ']
-        my_draw.text(text_pos,text[0]+text[1],(255,255,255),font=font)
-        my_draw.text((0,10),text[2]+text[3],(255,255,255),font=font)
-        my_draw.text((180,0),text[4]+str(stage),(255,255,255),font=font)
+        # my_draw.text(text_pos,text[0]+text[1],(255,255,255),font=font)
+        # my_draw.text((0,10),text[2]+text[3],(255,255,255),font=font)
+        # my_draw.text((180,0),text[4]+str(stage),(255,255,255),font=font)
 
         command = {'move': False, 'up_pressed': False , 'down_pressed': False, 'left_pressed': False, 'right_pressed': False, 'A_pressed': False}
         
@@ -349,6 +349,9 @@ def main():
             # continue
 
 
+        my_draw.text(text_pos,text[0]+text[1],(255,255,255),font=font)
+        my_draw.text((0,10),text[2]+text[3],(255,255,255),font=font)
+        my_draw.text((180,0),text[4]+str(stage),(255,255,255),font=font)
 
         if Student.life<=0:
             
@@ -358,12 +361,19 @@ def main():
             Student.life=3
             Student.score=0
             
+            Student= Character(joystick.width, joystick.height)
             enemy_1.regen((5,60),0,0)
             enemy_2.regen((5, 90),0,0)
             enemy_3.regen((5, 120),0,0)
             enemy_4.regen((235, 60),0,0)
             enemy_5.regen((235, 90),0,0)
             enemy_6.regen((235, 120),0,0)
+            for bullet in bullets:
+                bullet.state ='hit'
+            for bullet in bullets:
+                bullets.remove(bullet)
+            my_image.paste(back_g_origin,(0,0))
+            # joystick.disp.image(my_image)
             
         if Student.score>=18:
             stage+=1
@@ -375,12 +385,21 @@ def main():
             Student.life=3
             Student.score=0
             
+            Student= Character(joystick.width, joystick.height)
+            my_image.paste(back_g_origin,(0,0))
             enemy_1.regen((5,60),0,0)
             enemy_2.regen((5, 90),0,0)
             enemy_3.regen((5, 120),0,0)
             enemy_4.regen((235, 60),0,0)
             enemy_5.regen((235, 90),0,0)
             enemy_6.regen((235, 120),0,0)
+            for bullet in bullets:
+                bullet.state ='hit'
+            for bullet in bullets:
+                bullets.remove(bullet)
+            my_image.paste(back_g_origin,(0,0))
+            
+            
 
         # print("bullets: ",bullets)
 
