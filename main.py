@@ -77,12 +77,13 @@ game_start=Image.open(game_start_filename)
 game_clear=Image.open(game_clear_filename)
 
 Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
-# Char_r_1=Image.open(filename_right_1) 
-# Char_r_2=Image.open(filename_right_2)
-# Char_r_3=Image.open(filename_right_3)
-# Char_r_4=Image.open(filename_right_4)
-# Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
-Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
+Char_r_1=Image.open(filename_right_1) 
+Char_r_2=Image.open(filename_right_2)
+Char_r_3=Image.open(filename_right_3)
+Char_r_4=Image.open(filename_right_4)
+Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
+# Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
+Char=Image.open(filename_right_basic)
 
 flag_attack=0  #attack동작 구현 위한 전역변수
 
@@ -107,11 +108,11 @@ def main():
     
      
     Char_r=Image.open(filename_right_basic) #움직일 character의 그림(오른쪽)
-    # Char_r_1=Image.open(filename_right_1) 
-    # Char_r_2=Image.open(filename_right_2)
-    # Char_r_3=Image.open(filename_right_3)
-    # Char_r_4=Image.open(filename_right_4)
-    # Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
+    Char_r_1=Image.open(filename_right_1) 
+    Char_r_2=Image.open(filename_right_2)
+    Char_r_3=Image.open(filename_right_3)
+    Char_r_4=Image.open(filename_right_4)
+    Char_r_list=[Char_r_1,Char_r_2,Char_r_3,Char_r_4]
 
 
     Char_l_1=Image.open(filename_left_1) #움직일 character의 그림(왼쪽)
@@ -122,7 +123,8 @@ def main():
     # Char_4=Image.open(filename_down) #움직일 character의 그림(아래쪽)
     
     
-    Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
+    # Char=ImageOps.expand(Char_r, border=1, fill='red')   #image의 경계선(border)를 그림
+    Char=Image.open(filename_right_basic)
 
     
 
@@ -195,9 +197,11 @@ def main():
             flag_lr=1
             flag=~flag
             if flag:
-                Char=ImageOps.expand(Char_l_2, border=1, fill='red')   #image의 경계선(border)를 그림 
+                # Char=ImageOps.expand(Char_l_2, border=1, fill='red')   #image의 경계선(border)를 그림
+                Char=Image.open(filename_left_2) 
             else:
-                Char=ImageOps.expand(Char_l_1, border=1, fill='red')   #image의 경계선(border)를 그림
+                # Char=ImageOps.expand(Char_l_1, border=1, fill='red')   #image의 경계선(border)를 그림
+                Char=Image.open(filename_left_1) 
 
         # if not joystick.button_U.value and not joystick.button_L.value:  # 위와 왼쪽 동시에 pressed
         #     command['up_pressed'] = True
@@ -210,10 +214,11 @@ def main():
             flag_lr=0
             flag=~flag
             if flag:
-                Char=ImageOps.expand(Char_r_1, border=1, fill='red')   #image의 경계선(border)를 그림
+                # Char=ImageOps.expand(Char_r_1, border=1, fill='red')   #image의 경계선(border)를 그림
+                Char=Image.open(filename_right_1) 
             else:    
-                Char=ImageOps.expand(Char_r_4, border=1, fill='red')   #image의 경계선(border)를 그림
-            
+                # Char=ImageOps.expand(Char_r_4, border=1, fill='red')   #image의 경계선(border)를 그림
+                Char=Image.open(filename_right_4)
         
             
 
@@ -262,9 +267,12 @@ def main():
                 # enemy.collision_check(bullets)
                 enemy.move(Student)
                 
-                _, _, _, mask = Subject_img_border.split()
-                my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
+                # _, _, _, mask = Subject_img_border.split()
+                # my_image.paste(Subject_img_border,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
+                _, _, _, mask = Subject_img.split()
+                my_image.paste(Subject_img,tuple((enemy.center)-enemy.width_ego),mask)     #투명부분은 안 보이도록 설정
                 
+
             elif enemy.die_flag==0 and enemy.state == 'die':
                 print("enemy.state: ",enemy.state,"enemy: ",enemy)
                 timer(0,enemy)     # timer ISR을 실행시켜 일정 시간 이후 sign_regen값을 주도록 하기 위함
